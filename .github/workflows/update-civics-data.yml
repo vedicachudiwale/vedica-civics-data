@@ -1,0 +1,52 @@
+name: Update Civics Data
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # Runs every day at 12:15 UTC
+    - cron: "15 12 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Update civics data
+        run: |
+          python scripts/update_civics_data.py
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet civics_current.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit updated data
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "vedica-civics-bot"
+          git config user.email "actions@github.com"
+
+          git add civics_current.json
+          git commit -m "Update current civics data"
+          git push
