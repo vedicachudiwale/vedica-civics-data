@@ -282,11 +282,10 @@ def get_representatives():
 
         state = (
             info.findtext(
-                "state-fullname"
+                ".//state-fullname"
             )
             or ""
         ).strip()
-
         district = normalize_district(
             info.findtext("district")
             or ""
