@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "lastUpdated": "2026-08-31T00:00:00Z",
+
+  "national": {
+    "president": "Donald J. Trump",
+    "presidentParty": "Republican",
+    "vicePresident": "JD Vance",
+    "speakerOfTheHouse": "Mike Johnson",
+    "chiefJustice": "John G. Roberts, Jr."
+  },
+
+  "states": {
+    "Virginia": {
+      "capital": "Richmond",
+      "governor": "Abigail Spanberger",
+      "senators": [
+        "Mark Warner",
+        "Tim Kaine"
+      ],
+      "representatives": {
+        "1": "Rob Wittman",
+        "2": "Jennifer Kiggans",
+        "3": "Bobby Scott",
+        "4": "Jennifer McClellan",
+        "5": "John McGuire",
+        "6": "Ben Cline",
+        "7": "Eugene Vindman",
+        "8": "Don Beyer",
+        "9": "Morgan Griffith",
+        "10": "Suhas Subramanyam",
+        "11": "James Walkinshaw"
+      }
+    }
+  }
+}
