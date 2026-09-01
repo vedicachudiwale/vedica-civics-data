@@ -33,7 +33,7 @@ HOUSE_LEADERSHIP_URL = (
 )
 
 SUPREME_COURT_URL = (
-    "https://www.supremecourt.gov/about/about.aspx"
+    "https://www.supremecourt.gov/about/biographies.aspx"
 )
 HEADERS = {
     "User-Agent": (
@@ -448,6 +448,10 @@ def get_national_officials(old_national):
     # Chief Justice
     # -------------------------
 
+      # -------------------------
+    # Chief Justice
+    # -------------------------
+
     response = download(
         SUPREME_COURT_URL
     )
@@ -457,27 +461,28 @@ def get_national_officials(old_national):
         "html.parser"
     )
 
-    page_text = " ".join(
-        soup.stripped_strings
-    )
+    chief_justice = None
 
-    match = re.search(
-        r"Chief Justice of the United States\s+"
-        r"(.+?)\s+Associate Justices",
-        page_text
-    )
+    for text in soup.stripped_strings:
 
-    if not match:
+        marker = (
+            ", Chief Justice of the United States,"
+        )
+
+        if marker in text:
+
+            chief_justice = text.split(
+                marker,
+                1
+            )[0].strip()
+
+            break
+
+    if not chief_justice:
         raise RuntimeError(
             "Could not determine "
             "current Chief Justice."
         )
-
-    chief_justice = (
-        match.group(1).strip()
-    )
-
-
     # presidentParty stays from the existing
     # JSON for now. We will automate it next.
     president_party = old_national.get(
