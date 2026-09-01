@@ -523,27 +523,21 @@ def main():
         old_data = json.load(file)
 
 
-    # Keep the national values already
-    # stored in the external file.
-    old_national = old_data.get(
-    "national"
-)
-
-if not old_national:
-    raise RuntimeError(
-        "National officials are missing "
-        "from civics_current.json."
+        old_national = old_data.get(
+        "national"
     )
 
+    if not old_national:
+        raise RuntimeError(
+            "National officials are missing "
+            "from civics_current.json."
+        )
 
-print(
-    "Downloading national officials..."
-)
+    print("Downloading national officials...")
 
-national = get_national_officials(
-    old_national
-)
-
+    national = get_national_officials(
+        old_national
+    )
 
     print("Downloading governors...")
     governors = get_governors()
