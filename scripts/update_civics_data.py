@@ -23,7 +23,18 @@ HOUSE_URL = (
 )
 
 GOVERNORS_URL = "https://www.nga.org/governors/"
+)
+WHITE_HOUSE_URL = (
+    "https://www.whitehouse.gov/administration/"
+)
 
+HOUSE_LEADERSHIP_URL = (
+    "https://www.house.gov/leadership"
+)
+
+SUPREME_COURT_URL = (
+    "https://www.supremecourt.gov/about/about.aspx"
+)
 
 HEADERS = {
     "User-Agent": (
@@ -321,7 +332,176 @@ def get_representatives():
         )
 
     return representatives
+# ---------------------------------------------------------
+# NATIONAL OFFICIALS
+# ---------------------------------------------------------
 
+def get_national_officials(old_national):
+
+    # -------------------------
+    # President + Vice President
+    # -------------------------
+
+    response = download(
+        WHITE_HOUSE_URL
+    )
+
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser"
+    )
+
+    president = None
+    vice_president = None
+
+    for heading in soup.find_all(
+        ["h1", "h2", "h3"]
+    ):
+
+        text = " ".join(
+            heading.stripped_strings
+        ).strip()
+
+        if (
+            text.startswith("President ")
+            and not text.startswith(
+                "Vice President "
+            )
+        ):
+
+            president = text[
+                len("President "):
+            ].strip()
+
+        elif text.startswith(
+            "Vice President "
+        ):
+
+            vice_president = text[
+                len("Vice President "):
+            ].strip()
+
+
+    if not president:
+        raise RuntimeError(
+            "Could not determine "
+            "current President."
+        )
+
+    if not vice_president:
+        raise RuntimeError(
+            "Could not determine "
+            "current Vice President."
+        )
+
+
+    # -------------------------
+    # Speaker of the House
+    # -------------------------
+
+    response = download(
+        HOUSE_LEADERSHIP_URL
+    )
+
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser"
+    )
+
+    speaker = None
+
+    for heading in soup.find_all(
+        ["h1", "h2", "h3", "h4"]
+    ):
+
+        text = " ".join(
+            heading.stripped_strings
+        ).strip()
+
+        if text.startswith("Rep. "):
+
+            previous_text = " ".join(
+                heading.find_previous(
+                    ["h1", "h2", "h3", "h4"]
+                ).stripped_strings
+            ).strip()
+
+            if (
+                previous_text
+                == "Speaker of the House"
+            ):
+
+                speaker = text[
+                    len("Rep. "):
+                ].strip()
+
+                break
+
+
+    if not speaker:
+        raise RuntimeError(
+            "Could not determine "
+            "current Speaker of the House."
+        )
+
+
+    # -------------------------
+    # Chief Justice
+    # -------------------------
+
+    response = download(
+        SUPREME_COURT_URL
+    )
+
+    soup = BeautifulSoup(
+        response.text,
+        "html.parser"
+    )
+
+    page_text = " ".join(
+        soup.stripped_strings
+    )
+
+    match = re.search(
+        r"Chief Justice of the United States\s+"
+        r"(.+?)\s+Associate Justices",
+        page_text
+    )
+
+    if not match:
+        raise RuntimeError(
+            "Could not determine "
+            "current Chief Justice."
+        )
+
+    chief_justice = (
+        match.group(1).strip()
+    )
+
+
+    # presidentParty stays from the existing
+    # JSON for now. We will automate it next.
+    president_party = old_national.get(
+        "presidentParty"
+    )
+
+    if not president_party:
+        raise RuntimeError(
+            "President party is missing."
+        )
+
+
+    return {
+        "president": president,
+        "presidentParty":
+            president_party,
+        "vicePresident":
+            vice_president,
+        "speakerOfTheHouse":
+            speaker,
+        "chiefJustice":
+            chief_justice
+    }
 
 # ---------------------------------------------------------
 # BUILD JSON
@@ -346,16 +526,24 @@ def main():
 
     # Keep the national values already
     # stored in the external file.
-    national = old_data.get(
-        "national"
+    old_national = old_data.get(
+    "national"
+)
+
+if not old_national:
+    raise RuntimeError(
+        "National officials are missing "
+        "from civics_current.json."
     )
 
-    if not national:
 
-        raise RuntimeError(
-            "National officials are missing "
-            "from civics_current.json."
-        )
+print(
+    "Downloading national officials..."
+)
+
+national = get_national_officials(
+    old_national
+)
 
 
     print("Downloading governors...")
