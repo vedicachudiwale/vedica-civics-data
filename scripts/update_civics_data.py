@@ -23,7 +23,7 @@ HOUSE_URL = (
 )
 
 GOVERNORS_URL = "https://www.nga.org/governors/"
-)
+
 WHITE_HOUSE_URL = (
     "https://www.whitehouse.gov/administration/"
 )
@@ -35,7 +35,6 @@ HOUSE_LEADERSHIP_URL = (
 SUPREME_COURT_URL = (
     "https://www.supremecourt.gov/about/about.aspx"
 )
-
 HEADERS = {
     "User-Agent": (
         "VedicaCivicsData/1.0 "
