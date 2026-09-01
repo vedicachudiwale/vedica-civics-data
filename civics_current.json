@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "lastUpdated": "2026-09-01T03:03:55.217107Z",
+  "lastUpdated": "2026-09-01T03:31:14.870171Z",
   "national": {
     "president": "Donald J. Trump",
     "presidentParty": "Republican",
@@ -942,6 +942,10 @@
     }
   },
   "sources": {
+    "presidentVicePresident": "https://www.whitehouse.gov/administration/",
+    "presidentParty": "https://www.whitehouse.gov/administration/",
+    "speakerOfTheHouse": "https://www.house.gov/leadership",
+    "chiefJustice": "https://www.supremecourt.gov/about/biographies.aspx",
     "governors": "https://www.nga.org/governors/",
     "senators": "https://www.senate.gov/general/contact_information/senators_cfm.xml",
     "representatives": "https://clerk.house.gov/xml/lists/MemberData.xml"
